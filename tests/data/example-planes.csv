@@ -1,0 +1,7 @@
+name,description,x,y,z
+Realmspace,,0.1,0.2,0.3
+Clusterspace,,0.1,0.4,0.5
+Greyspace,,0.4,0.2,0.7
+Krynnspace,,0.5,0.5,0.5
+Darkspace,,0.2,0.4,0.2
+Nothingspace,test for missing coords,,,

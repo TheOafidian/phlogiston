@@ -30,15 +30,15 @@ def main(args=None):
         AVAILABLE_COMMANDS[0], help="Chart a starmap from an existing input file."
     )
     chart_parser.add_argument("filename")
-    chart_parser.add_argument("--output", "-o", default="/")
+    chart_parser.add_argument("--output", "-o", default="/", help="Name of file to save output map to.")
     chart_parser.add_argument(
-        "--extension", "-e", type=extension, choices=EXTENSIONS_OUT, default="html"
+        "--extension", "-e", type=extension, choices=EXTENSIONS_OUT, default="html", help= "Extension to save output as."
     )
-    chart_parser.add_argument("--dimensions", "-n", default=2, type=int)
-    chart_parser.add_argument("--radius", "-r", default=0.2, type=float)
-    chart_parser.add_argument("--distance_metric", "-p", default=0.1, type=float)
-    chart_parser.add_argument("--name", "-s", default="", type=str)
-    chart_parser.add_argument("--dtime", "-t", default=1, type=float)
+    chart_parser.add_argument("--dimensions", "-n", default=2, type=int, choices=[2,3], help="Amount of dimensions to plot.")
+    chart_parser.add_argument("--radius", "-r", default=0.2, type=float, help="Relative distance two spheres can maximally have to draw routes between them (0-1).")
+    chart_parser.add_argument("--distance_metric", "-p", default=2, type=float, help="Minkowski distance metric to use.")
+    chart_parser.add_argument("--name", "-s", default="", type=str, help="Name of the starchart. Gets added to the top of the figure.")
+    chart_parser.add_argument("--dtime", "-t", default=1, type=float, help="Modifier to the distance in time betweeen different spheres.")
     chart_parser.set_defaults(func=chart_from_file)
 
     # RANDOM PARSER #################

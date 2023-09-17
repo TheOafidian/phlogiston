@@ -45,6 +45,6 @@ def return_outputname(fin, fout, ext):
     else:
         fout, ext_f = os.path.splitext(fout)
         if ext_f != "":
-            return "".join(fout, ext_f)
+            return "".join([fout, ext_f])
 
     return f"{fout}.{ext}"

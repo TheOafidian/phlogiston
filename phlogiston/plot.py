@@ -152,36 +152,40 @@ def plot_graph(g, sphere_names, map_name="", distance_corr=1):
 def make_printer_friendly(fig):
     SPHERE_LAYER = 1
     ROUTE_LAYER = 0
-    ROUTE_DIST_LAYER  = 2
-    
+    ROUTE_DIST_LAYER = 2
+
     # White background
-    fig.update_layout(
-        plot_bgcolor="white",
-        paper_bgcolor="white",
-        font_color = "black"
-    )
+    fig.update_layout(plot_bgcolor="white", paper_bgcolor="white", font_color="black")
 
     # Add planet names
-    fig.data[SPHERE_LAYER]['mode'] = "markers+text"
-    fig.data[SPHERE_LAYER]['textposition'] = 'top center'
+    fig.data[SPHERE_LAYER]["mode"] = "markers+text"
+    fig.data[SPHERE_LAYER]["textposition"] = "top center"
     # Add scale
     try:
-        rel_dist = round(math.sqrt(
-            (fig.data[0]['x'][1] - fig.data[0]['x'][0])**2 + 
-            (fig.data[0]['y'][1] - fig.data[0]['y'][0])**2), 3)
-        abs_dist = int(fig.data[2]['hovertext'][0].split(" ")[0])
+        rel_dist = round(
+            math.sqrt(
+                (fig.data[0]["x"][1] - fig.data[0]["x"][0]) ** 2
+                + (fig.data[0]["y"][1] - fig.data[0]["y"][0]) ** 2
+            ),
+            3,
+        )
+        abs_dist = int(fig.data[2]["hovertext"][0].split(" ")[0])
 
-        scale_length = (abs_dist/rel_dist)* 0.10
+        scale_length = (abs_dist / rel_dist) * 0.10
     except:
-        log.warn("No routes between spheres found, try increasing the --radius or play around with the --distance_metric.")
+        log.warn(
+            "No routes between spheres found, try increasing the --radius or play around with the --distance_metric."
+        )
 
-    fig.add_trace(go.Scatter(
-        x = [0.05, 0.10, 0.15],
-        y = [0.05, 0.05, 0.05],
-        text=["0",f"{scale_length/2}h", f"{scale_length}h"],
-        mode="lines+text",
-        textposition="top center",
-        line=dict(color="black")
-    ))
+    fig.add_trace(
+        go.Scatter(
+            x=[0.05, 0.10, 0.15],
+            y=[0.05, 0.05, 0.05],
+            text=["0", f"{scale_length/2}h", f"{scale_length}h"],
+            mode="lines+text",
+            textposition="top center",
+            line=dict(color="black"),
+        )
+    )
 
     return fig

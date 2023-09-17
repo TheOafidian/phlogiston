@@ -3,6 +3,7 @@ import networkx as nx
 from phlogiston.datatypes import Sphere, Coordinates
 from phlogiston.io import read_spheres
 
+
 def list_spheres(filename: str):
 
     df = read_spheres(filename)

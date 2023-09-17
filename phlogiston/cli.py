@@ -1,5 +1,4 @@
 import importlib.util
-import plotly.express as px
 from phlogiston.io import return_outputname, log
 from phlogiston.plot import plot_graph, make_printer_friendly
 import phlogiston.handlers as ph
@@ -89,6 +88,7 @@ def chart_from_file(filename, foutname, ext, n, radius, p, name, dtime):
 
     if ext == "pdf":
         # write garbage graph, to get rid of loading bar bug in kaleido
+        import plotly.express as px
         import time
 
         gfig = px.scatter(x=[0, 1, 2, 3, 4], y=[0, 1, 4, 9, 16])

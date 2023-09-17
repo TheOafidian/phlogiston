@@ -1,5 +1,6 @@
 import math
 import plotly.graph_objects as go
+from phlogiston.io import log
 
 DISTANCE_CORR = 1200
 
@@ -44,7 +45,9 @@ def get_mid_nodes(graph, dcor):
         mnode_x.extend([(x0 + x1) / 2])  # assuming values positive/get midpoint
         mnode_y.extend([(y0 + y1) / 2])  # assumes positive vals/get midpoint
         distance = math.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2)
-        mnode_txt.extend([f"{round(dcor*DISTANCE_CORR*distance**2)} hours"])  # hovertext
+        mnode_txt.extend(
+            [f"{round(dcor*DISTANCE_CORR*distance**2)} hours"]
+        )  # hovertext
 
     return mnode_x, mnode_y, mnode_txt
 
@@ -100,8 +103,8 @@ def plot_graph(g, sphere_names, map_name="", distance_corr=1):
         node_text.append("# of connections: " + str(len(adjacencies[1])))
 
     node_trace.marker.color = node_adjacencies
-    node_text = ["P" + str(t) for t in range(len(node_text))]
-    node_text = [sphere_names[t] if t in sphere_names else t for t in node_text]
+
+    node_text = [sphere_names[n] for n in g.nodes]
     node_trace.text = node_text
 
     # highlight_trace = go.Scatter(
@@ -114,7 +117,7 @@ def plot_graph(g, sphere_names, map_name="", distance_corr=1):
     fig = go.Figure(
         data=[edge_trace, node_trace, mnode_trace],
         layout=go.Layout(
-            title="Starchart<br>The Known Universe",
+            title=f"Starchart<br>{map_name}",
             titlefont_size=16,
             showlegend=False,
             hovermode="closest",
@@ -142,5 +145,43 @@ def plot_graph(g, sphere_names, map_name="", distance_corr=1):
         # title_font_family="Times New Roman",
         # title_font_color="red",
     )
+
+    return fig
+
+
+def make_printer_friendly(fig):
+    SPHERE_LAYER = 1
+    ROUTE_LAYER = 0
+    ROUTE_DIST_LAYER  = 2
+    
+    # White background
+    fig.update_layout(
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        font_color = "black"
+    )
+
+    # Add planet names
+    fig.data[SPHERE_LAYER]['mode'] = "markers+text"
+    fig.data[SPHERE_LAYER]['textposition'] = 'top center'
+    # Add scale
+    try:
+        rel_dist = round(math.sqrt(
+            (fig.data[0]['x'][1] - fig.data[0]['x'][0])**2 + 
+            (fig.data[0]['y'][1] - fig.data[0]['y'][0])**2), 3)
+        abs_dist = int(fig.data[2]['hovertext'][0].split(" ")[0])
+
+        scale_length = (abs_dist/rel_dist)* 0.10
+    except:
+        log.warn("No routes between spheres found, try increasing the --radius or play around with the --distance_metric.")
+
+    fig.add_trace(go.Scatter(
+        x = [0.05, 0.10, 0.15],
+        y = [0.05, 0.05, 0.05],
+        text=["0",f"{scale_length/2}h", f"{scale_length}h"],
+        mode="lines+text",
+        textposition="top center",
+        line=dict(color="black")
+    ))
 
     return fig

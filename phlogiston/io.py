@@ -6,6 +6,7 @@ import pandas as pd
 COLNAMES = ["sphere", "desc", "x", "y", "z"]
 DTYPES = [np.str_, np.str_, np.float32, np.float32, np.float32]
 DDTYPE = {k: v for k, v in zip(COLNAMES, DTYPES)}
+log = logging.getLogger("phlogiston")
 
 
 def spheres_csv_to_df(filename):
@@ -36,6 +37,7 @@ def read_spheres(filename):
     else:
         logging.error(f"{ext} format of {filename} not supported.")
 
+
 def return_outputname(fin, fout, ext):
 
     if fout == "/":
@@ -44,5 +46,5 @@ def return_outputname(fin, fout, ext):
         fout, ext_f = os.path.splitext(fout)
         if ext_f != "":
             return "".join(fout, ext_f)
-        
+
     return f"{fout}.{ext}"

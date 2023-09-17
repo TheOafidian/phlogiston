@@ -14,4 +14,4 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-phlogiston = "phlogiston.__main__:main"
+phlogiston = "phlogiston.cli:main"

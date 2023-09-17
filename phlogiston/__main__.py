@@ -1,13 +1,20 @@
+import logging
+import importlib.util
 import numpy as np
 import networkx as nx
-from phlogiston.io import read_spheres
+import plotly
+import plotly.express as px
+from phlogiston.io import read_spheres, return_outputname
 from phlogiston.datatypes import Sphere, Coordinates
 from phlogiston.plot import plot_graph
 
 test_path = "tests/data/example-planes.csv"
+log = logging.getLogger(__name__)
 
 AVAILABLE_COMMANDS = ["chart", "random"]
-
+EXTENSIONS = ["html", "pdf", "png"]
+SHEET_LONG = 3508
+SHEET_SHORT = 2480
 
 def list_spheres(filename: str):
 
@@ -70,16 +77,21 @@ def main():
     command_parsers = {}
 
     # CHART PARSER ##################
+    def extension(string:str):
+        return string.strip(".")
+
     chart_parser = argparse.ArgumentParser(
         prog=f"phlogiston {AVAILABLE_COMMANDS[0]}",
         description="Fantasy Starchart mapper from input file",
     )
     chart_parser.add_argument("filename")
-    chart_parser.add_argument("--dimensions", "-n", default=2)
-    chart_parser.add_argument("--radius", "-r", default=0.2)
-    chart_parser.add_argument("--distance_metric", "-p", default=0.1)
-    chart_parser.add_argument("--name", "-s", default="")
-    chart_parser.add_argument("--dtime", "-t", default=1)
+    chart_parser.add_argument("--dimensions", "-n", default=2, type=int)
+    chart_parser.add_argument("--radius", "-r", default=0.2, type=float)
+    chart_parser.add_argument("--distance_metric", "-p", default=0.1, type=float)
+    chart_parser.add_argument("--name", "-s", default="", type=str)
+    chart_parser.add_argument("--dtime", "-t", default=1, type=float)
+    chart_parser.add_argument("--output", "-o", default="/")
+    chart_parser.add_argument("--extension", "-e", type=extension, choices=EXTENSIONS, default="html")
 
     
     command_parsers[AVAILABLE_COMMANDS[0]] = chart_parser
@@ -96,21 +108,39 @@ def main():
     args, options = parser.parse_known_args()
     cargs = command_parsers[args.command].parse_args(options)
 
-    if args.command == AVAILABLE_COMMANDS[0]:        
-        chart_from_file(cargs.filename, 
+    if args.command == AVAILABLE_COMMANDS[0]:
+        outf = return_outputname(cargs.filename, cargs.output, cargs.extension)
+
+        chart_from_file(cargs.filename, outf, cargs.extension,
                         cargs.dimensions, cargs.radius, cargs.distance_metric,
                         cargs.name, cargs.dtime)
 
 
-def chart_from_file(filename, n, radius, p, name, dtime):
+def chart_from_file(filename, foutname, ext, n, radius, p, name, dtime):
     ls = list_spheres(filename)
     sphere_n = {l.sphere_no:l.name for l in ls}
     net = create_network(ls, n, radius, p)
     fig = plot_graph(net, sphere_n, map_name=name, distance_corr=dtime)
 
-    # TODO: write handler for output types
-    fig.write_html("Test-starchart.html")
+    if ext == "html":
+        fig.write_html(foutname)
+        return foutname
 
+    if importlib.util.find_spec("kaleido") is None:
+        log.error("Saving the chart as png/pdf requires the kaleido python package. Please run:\npip install -U kaleido")
+
+    if ext == "pdf":
+        #write garbage graph, to get rid of loading bar bug in kaleido
+        import time
+        gfig = px.scatter(x=[0, 1, 2, 3, 4], y=[0, 1, 4, 9, 16])
+        gfig.write_image(foutname, format="pdf")
+        time.sleep(2)
+        
+        #TODO Change layout to be more printer friendly
+        plotly.io.write_image(fig, foutname, format="pdf", width=SHEET_LONG, height=SHEET_SHORT)
+    elif ext == "png":
+        plotly.io.write_image(fig, foutname, format="png")
+    return foutname
 
 def generate_random_chart():
     pass

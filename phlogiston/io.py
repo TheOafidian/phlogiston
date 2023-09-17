@@ -35,3 +35,14 @@ def read_spheres(filename):
         return READERS[ext](filename)
     else:
         logging.error(f"{ext} format of {filename} not supported.")
+
+def return_outputname(fin, fout, ext):
+
+    if fout == "/":
+        fout = os.path.splitext(os.path.basename(fin))[0]
+    else:
+        fout, ext_f = os.path.splitext(fout)
+        if ext_f != "":
+            return "".join(fout, ext_f)
+        
+    return f"{fout}.{ext}"

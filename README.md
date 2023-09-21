@@ -1,7 +1,9 @@
 # Phlogiston
 
-A python package that allows visualization (in 2 or 3D) of fictional starcharts. 
+A python package that allows visualization (in 2 ~~or 3D~~) of fictional starcharts. 
 Written to be used for a D&D Spelljammer campaign.
+
+[An example chart can be found here](https://htmlpreview.github.io/?https://github.com/TheOafidian/phlogiston/blob/main/docs/example-chart.html).
 
 # Installation
 

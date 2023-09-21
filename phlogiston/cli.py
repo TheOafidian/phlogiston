@@ -72,6 +72,8 @@ def main(args=None):
 
 def chart_from_file(args):
     foutname = return_outputname(args.filename, args.output, args.extension)
+    if args.dimensions == 3:
+        raise NotImplementedError("3D visualization still needs to be implemented")
     ls = ph.list_spheres(args.filename)
     sphere_n = {l.sphere_no: l.name for l in ls}
     net = ph.create_network(ls, args.dimensions, args.radius, args.distance_metric)

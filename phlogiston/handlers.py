@@ -50,3 +50,16 @@ def create_network(sphere_list, n=2, radius=0.2, p=0.1):
     network.add_edges_from(nx.geometric_edges(network, radius, p))
 
     return network
+
+def graph_to_sphere_list(G):
+
+    dims = len(G.nodes[1]['pos'])
+    if dims == 2:
+        sl = [Sphere(f"P{i}", 
+                coords=Coordinates(G.nodes[i]['pos'][0], G.nodes[i]['pos'][1], 0)) for i in G.nodes]
+        
+    else:
+        sl = [Sphere(f"P{i}", 
+                coords=Coordinates(G.nodes[i]['pos'][0], G.nodes[i]['pos'][1], G.nodes[i]['pos'][2])) for i in G.nodes]
+
+    return sl

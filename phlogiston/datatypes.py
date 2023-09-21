@@ -2,6 +2,7 @@ import random
 import itertools
 import logging
 from dataclasses import dataclass
+import pandas as pd
 
 
 @dataclass
@@ -51,10 +52,13 @@ class Sphere:
     def remove(self):
         Sphere.list.remove(self)
 
-    def get(name: str):
+    def get(self, name: str):
         return [i for i in Sphere.list if i.name == name][0]
+    
+    def to_dict(self):
+        return dict(
+            name=self.name, description=self.description, 
+            x=self.coords.x, y = self.coords.y, z=self.coords.z)
 
-
-# TODO: wrangle list of spheres into a network obj and represent in 2D/3D with plotly
-
-# TODO: write tool for importing spheres from a csv/tsv/xlsx
+    def to_row(self):
+        return(pd.DataFrame(self.to_dict(), index=[self.sphere_no]))

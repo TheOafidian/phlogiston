@@ -1,6 +1,6 @@
 import argparse
-import importlib.util
-from phlogiston.io import return_outputname, log
+import networkx as nx
+from phlogiston.io import return_outputname, write_spheres, log
 from phlogiston.plot import plot_graph, make_printer_friendly
 import phlogiston.handlers as ph
 
@@ -43,11 +43,25 @@ def main(args=None):
 
     # RANDOM PARSER #################
 
+    def relative_float(arg):
+        """Type function for argparse - a float between 0-1."""
+        try:
+            f = float(arg)
+        except ValueError:
+            raise argparse.ArgumentTypeError("Floating point number required.")
+
+        if f < 0 or f > 1:
+            raise argparse.ArgumentTypeError("Relative float should be between 0 and 1.")
+        return f
+
     random_parser = subparsers.add_parser(
         AVAILABLE_COMMANDS[1],
         help="Generate random coordinates for a starchart and save to a file.",
     )
     random_parser.add_argument("filename")
+    random_parser.add_argument("--spheres", "-n", default=100, type=int, help="The amount of spheres to populate the chart with.")
+    random_parser.add_argument("--max-length", "-l", default=0.125, type=relative_float, help="The max distance between two spheres that is still counted as 'connected'. Relative between 0-1.")
+    random_parser.add_argument("--seed", "-s", default=42, type=int, help="A seed for reproducible random charting.")
     random_parser.set_defaults(func=generate_random_chart)
 
     #################################
@@ -85,7 +99,10 @@ def chart_from_file(args):
 
 
 def generate_random_chart(args):
-    pass
+
+    G = nx.random_geometric_graph(args.spheres, args.max_length,seed=args.seed)
+    ls = ph.graph_to_sphere_list(G)
+    write_spheres(ls, args.filename)
 
 
 if __name__ == "__main__":

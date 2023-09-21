@@ -50,3 +50,20 @@ The Minkowski distance metric determines how distances are calculated (1 and 2 f
 An example of how to visualiwe the effect of the parameter on distances from Wikipedia:
 
 ![Minkowski distance](https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/2D_unit_balls.svg/1451px-2D_unit_balls.svg.png)
+
+## Random command
+```
+usage: phlogiston random [-h] [--spheres SPHERES] [--max-length MAX_LENGTH] [--seed SEED] filename
+
+positional arguments:
+  filename
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --spheres SPHERES, -n SPHERES
+                        The amount of spheres to populate the chart with.
+  --max-length MAX_LENGTH, -l MAX_LENGTH
+                        The max distance between two spheres that is still counted as 'connected'. Relative between
+                        0-1.
+  --seed SEED, -s SEED  A seed for reproducible random charting.
+```

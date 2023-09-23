@@ -29,14 +29,20 @@ def spheres_excel_to_df(filename):
 
 READERS = dict(csv=spheres_csv_to_df, tsv=spheres_tsv_to_df, xlsx=spheres_excel_to_df)
 
-def spheres_df_to_csv(df:pd.DataFrame, filename, sep=","):
+
+def spheres_df_to_csv(df: pd.DataFrame, filename, sep=","):
     df.to_csv(filename, sep=sep, index=False)
 
 
-def spheres_df_to_xlsx(df:pd.DataFrame, filename):
+def spheres_df_to_xlsx(df: pd.DataFrame, filename):
     df.to_excel(filename, index=False)
 
-WRITERS = dict(csv=spheres_df_to_csv, tsv=partial(spheres_df_to_csv, sep="\t"), xlsx=spheres_df_to_xlsx)
+
+WRITERS = dict(
+    csv=spheres_df_to_csv,
+    tsv=partial(spheres_df_to_csv, sep="\t"),
+    xlsx=spheres_df_to_xlsx,
+)
 
 
 def read_spheres(filename):
@@ -57,13 +63,14 @@ def write_spheres(sphere_list, filename):
         logging.error(f"{ext} format of {filename} not supported.")
 
 
-
 def return_outputname(fin, fout, ext):
 
     if fout == "/":
         fout = os.path.splitext(os.path.basename(fin))[0]
     else:
         fout, ext_f = os.path.splitext(fout)
+        if ext == "html!":
+            return f"{fout}.html"
         if ext_f != "":
             return "".join([fout, ext_f])
 

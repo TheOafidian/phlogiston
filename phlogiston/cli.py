@@ -129,11 +129,13 @@ def main(args=None):
 
 
 def chart_from_file(args):
+    print(type(args.dimensions))
+    print(type(args.extension))
 
     if args.dimensions == 3:
         raise NotImplementedError("3D visualization still needs to be implemented")
 
-    if args.dimensions == 3 & args.extension != "html":
+    if args.dimensions == 3 and args.extension != "html":
         log.warning("Can only output 3D renders to html.")
         args.extension = "html!"
 
